@@ -3,7 +3,7 @@
 [![Java CI with Maven](https://github.com/Kinley-pal8/cicd-demo/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/Kinley-pal8/cicd-demo/actions)
 [![Security Scan](https://github.com/Kinley-pal8/cicd-demo/workflows/Enhanced%20Security%20Scan/badge.svg)](https://github.com/Kinley-pal8/cicd-demo/actions)
 
-A comprehensive CI/CD demonstration project built with Spring Boot, showcasing modern security practices, automated testing, and continuous integration with GitHub Actions and Snyk security scanning.
+A comprehensive CI/CD demonstration project built with .Spring Boot, showcasing modern security practices, automated testing, and continuous integration with GitHub Actions and Snyk security scanning.
 
 ## 🚀 Features
 
