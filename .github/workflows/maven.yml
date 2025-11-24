@@ -34,13 +34,13 @@ jobs:
           distribution: "temurin"
           cache: maven
       - name: Run comprehensive Snyk scan
-        uses: snyk/actions/maven@master
+        uses: snyk/actions/maven@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=medium --sarif-file-output=snyk.sarif
       - name: Upload results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: snyk.sarif
