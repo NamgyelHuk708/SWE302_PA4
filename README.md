@@ -1,286 +1,123 @@
-# CI/CD Demo - Spring Boot Security Hardened Application
+# CI/CD Demo Project
 
-[![Java CI with Maven](https://github.com/Kinley-pal8/cicd-demo/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/Kinley-pal8/cicd-demo/actions)
-[![Security Scan](https://github.com/Kinley-pal8/cicd-demo/workflows/Enhanced%20Security%20Scan/badge.svg)](https://github.com/Kinley-pal8/cicd-demo/actions)
+[![Java CI with Maven](https://github.com/NamgyelHuk708/SWE302_PA4/actions/workflows/maven.yml/badge.svg)](https://github.com/NamgyelHuk708/SWE302_PA4/actions/workflows/maven.yml)
+[![Security Scan](https://img.shields.io/badge/security-snyk-4c1?style=flat-square)](https://github.com/NamgyelHuk708/SWE302_PA4/security/code-scanning)
 
-A comprehensive CI/CD demonstration project built with .Spring Boot, showcasing modern security practices, automated testing, and continuous integration with GitHub Actions and Snyk security scanning.
+## Overview
 
-## 🚀 Features
+This is a Spring Boot application demonstrating CI/CD practices with integrated Static Application Security Testing (SAST) using Snyk.
 
-- **Spring Boot 3.4.10** - Latest stable version with security patches
-- **Java 17 LTS** - Long-term support with modern language features
-- **RESTful API** - Clean endpoints for health checks and data generation
-- **Security Hardened** - Zero known vulnerabilities through comprehensive dependency management
-- **Containerized** - Alpine-based Docker image for minimal attack surface
-- **Automated Testing** - Unit tests with JaCoCo code coverage
-- **CI/CD Pipeline** - GitHub Actions with security scanning integration
+## Features
 
-## 📋 Table of Contents
+- **Automated Testing**: Unit tests run on every push and pull request
+- **Security Scanning**: Snyk SAST integration for vulnerability detection
+- **Dependency Monitoring**: Continuous monitoring of project dependencies
+- **Scheduled Scans**: Weekly security scans every Monday
+- **GitHub Security Integration**: Results uploaded to GitHub Security tab
 
-- [Quick Start](#quick-start)
-- [API Endpoints](#api-endpoints)
-- [Development](#development)
-- [Security](#security)
-- [Docker](#docker)
-- [CI/CD Pipeline](#cicd-pipeline)
-- [Testing](#testing)
-- [Contributing](#contributing)
+## Tech Stack
 
-## 🏃‍♂️ Quick Start
+- **Framework**: Spring Boot 3.4.11
+- **Java Version**: 17
+- **Build Tool**: Maven
+- **Security**: Snyk SAST
+- **CI/CD**: GitHub Actions
+
+## Dependencies
+
+- Spring Web
+- DataFaker (for generating random data)
+- JaCoCo (for code coverage)
+
+## Getting Started
 
 ### Prerequisites
 
-- Java 17 or later
-- Maven 3.8+
-- Docker (optional)
+- Java 17 or higher
+- Maven 3.6+
 
-### Local Development
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/Kinley-pal8/cicd-demo.git
-   cd cicd-demo
-   ```
-
-2. **Run the application**
-
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-3. **Access the application**
-   - Health Check: http://localhost:8080/
-   - Version Info: http://localhost:8080/version
-   - Sample Data: http://localhost:8080/nations
-
-## 🔌 API Endpoints
-
-| Endpoint      | Method | Description           | Response              |
-| ------------- | ------ | --------------------- | --------------------- |
-| `/`           | GET    | Health check endpoint | Plain text status     |
-| `/version`    | GET    | Application version   | Version string        |
-| `/nations`    | GET    | Random nation data    | JSON array (10 items) |
-| `/currencies` | GET    | Random currency data  | JSON array (20 items) |
-
-### Example Responses
-
-**GET /nations**
-
-```json
-[
-  {
-    "nationality": "American",
-    "capitalCity": "Washington D.C.",
-    "flag": "🇺🇸",
-    "language": "English"
-  }
-]
-```
-
-**GET /currencies**
-
-```json
-[
-  {
-    "name": "US Dollar",
-    "code": "USD"
-  }
-]
-```
-
-## 🛠 Development
-
-### Project Structure
-
-```
-src/
-├── main/java/sg/edu/nus/iss/cicddemo/
-│   ├── CicdDemoApplication.java          # Main application class
-│   └── Controller/
-│       └── DataController.java           # REST API controller
-├── main/resources/
-│   └── application.properties            # App configuration
-└── test/java/                           # Unit tests
-```
-
-### Key Dependencies
-
-- **Spring Boot Starter Web** - RESTful web services
-- **DataFaker 2.4.0** - Secure test data generation (replaced JavaFaker)
-- **Jackson** - JSON processing
-- **JUnit 5** - Testing framework
-
-### Building
+### Build and Run
 
 ```bash
-# Clean and compile
-./mvnw clean compile
+# Clone the repository
+git clone https://github.com/NamgyelHuk708/SWE302_PA4.git
+cd SWE302_PA4
+
+# Build the project
+mvn clean compile
 
 # Run tests
-./mvnw test
+mvn test
 
-# Package application
-./mvnw package
-
-# Run with specific profile
-./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+# Start the application
+mvn spring-boot:run
 ```
 
-## 🔒 Security
+The application will start on `http://localhost:8080`
 
-This project implements comprehensive security measures:
+## Security
 
-### Vulnerability Management
+This project uses Snyk for security scanning:
 
-- **Zero Known CVEs** - All dependencies updated to secure versions
-- **Automated Scanning** - Snyk integration in CI/CD pipeline
-- **Alpine Base Image** - Minimal container with reduced attack surface
-- **Non-root User** - Container runs with limited privileges
+- **Dependency Scanning**: Identifies vulnerabilities in project dependencies
+- **Code Scanning**: Static analysis for security issues in source code
+- **Continuous Monitoring**: Tracks project in Snyk for new vulnerabilities
+- **Automated Remediation**: Suggests fixes for detected issues
 
-### Recent Security Fixes
+### Security Configuration
 
-| CVE            | Component    | Fix                                | Status   |
-| -------------- | ------------ | ---------------------------------- | -------- |
-| CVE-2025-41249 | spring-core  | Upgrade to 6.2.11                  | ✅ Fixed |
-| Multiple CVEs  | JavaFaker    | Replaced with DataFaker 2.4.0      | ✅ Fixed |
-| Container CVEs | OpenJDK base | Switched to Eclipse Temurin Alpine | ✅ Fixed |
+Security policies are managed in the `.snyk` file. View current vulnerabilities and security status in the [Security tab](https://github.com/NamgyelHuk708/SWE302_PA4/security).
 
-### Security Policy
+## CI/CD Pipeline
 
-The project maintains a `.snyk` policy file tracking all vulnerability remediations with expiration dates for continuous monitoring.
+The project includes a comprehensive CI/CD pipeline:
 
-## 🐳 Docker
+1. **Code Changes Detection**: Runs only when relevant files change
+2. **Build & Test**: Compiles code and runs unit tests
+3. **Security Analysis**: 
+   - Dependency vulnerability scanning
+   - Code security scanning
+4. **Results Upload**: Security findings sent to GitHub Security
+5. **Monitoring**: Production dependencies tracked in Snyk
 
-### Building the Image
+### Workflow Triggers
 
-```bash
-# Build image
-docker build -t cicd-demo:latest .
+- **Push to main**: Full pipeline execution
+- **Pull Requests**: Full pipeline execution
+- **Weekly Schedule**: Security scans every Monday at 2 AM UTC
 
-# Run container
-docker run -p 8080:8080 cicd-demo:latest
-```
-
-### Image Details
-
-- **Base Image**: `eclipse-temurin:17-jdk-alpine`
-- **Size**: Optimized for minimal footprint
-- **Security**: Non-root user, dumb-init process manager
-- **Port**: Exposes 8080
-
-### Docker Compose (Optional)
-
-```yaml
-version: "3.8"
-services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-```
-
-## 🔄 CI/CD Pipeline
-
-### GitHub Actions Workflows
-
-1. **Maven Build & Test** (`.github/workflows/maven.yml`)
-
-   - Runs on push/PR to master
-   - Java 17 with Eclipse Temurin
-   - Maven test execution
-   - Artifact caching
-
-2. **Enhanced Security Scan** (`.github/workflows/enhanced-security.yml`)
-   - Snyk vulnerability scanning
-   - CodeQL analysis
-   - SARIF report generation
-   - Security artifact upload
-
-### Pipeline Features
-
-- **Automated Testing** - Unit tests run on every commit
-- **Security Scanning** - Snyk checks for vulnerabilities
-- **Code Analysis** - CodeQL for security issues
-- **Dependency Caching** - Maven dependencies cached for faster builds
-- **Multi-stage Validation** - Test → Security → Deploy flow
-
-## 🧪 Testing
-
-### Running Tests
-
-```bash
-# Run all tests
-./mvnw test
-
-# Run with coverage
-./mvnw test jacoco:report
-
-# Run specific test
-./mvnw test -Dtest=DataControllerTest
-```
-
-### Test Coverage
-
-- **Unit Tests**: Controller and application tests
-- **Integration Tests**: Full Spring context testing
-- **Coverage Tool**: JaCoCo for comprehensive reporting
-- **Coverage Report**: `target/site/jacoco/index.html`
-
-### Test Structure
+## Project Structure
 
 ```
-src/test/java/
-├── CicdDemoApplicationTests.java        # Application context tests
-└── DataControllerTest.java              # Controller endpoint tests
+├── .github/
+│   └── workflows/
+│       └── maven.yml          # CI/CD workflow
+├── src/
+│   ├── main/java/
+│   │   └── sg/edu/nus/iss/cicddemo/
+│   │       ├── CicdDemoApplication.java
+│   │       └── Controller/
+│   │           └── DataController.java
+│   └── test/java/
+├── .snyk                      # Snyk configuration
+├── pom.xml                    # Maven configuration
+└── dockerfile                 # Docker configuration
 ```
 
-## 🤝 Contributing
+## Contributing
 
-### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `mvn test`
+5. Submit a pull request
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
+All pull requests will be automatically scanned for security vulnerabilities.
 
-### Code Standards
+## License
 
-- **Java 17** language features encouraged
-- **Spring Boot** best practices
-- **Security First** - All dependencies must be vulnerability-free
-- **Test Coverage** - Maintain high test coverage
-- **Documentation** - Update README for significant changes
-
-### Security Requirements
-
-- Run `mvn dependency:tree` to check for vulnerable dependencies
-- Ensure Snyk scans pass
-- Update `.snyk` policy for any new vulnerabilities
-- Use secure coding practices
-
-## 📚 Additional Resources
-
-- **Spring Boot Documentation**: https://spring.io/projects/spring-boot
-- **DataFaker Documentation**: https://www.datafaker.net/
-- **Snyk Security**: https://snyk.io/
-- **GitHub Actions**: https://docs.github.com/en/actions
-
-## 📄 License
-
-This project is part of an educational CI/CD workshop demonstrating modern DevSecOps practices.
-
-## 🏫 Academic Context
-
-**Workshop**: CI/CD SAST/DAST Integration  
-**Institution**: National University of Singapore (NUS)  
-**Focus**: Practical integration of security scanning tools in CI/CD pipelines
+This project is part of the NUS-ISS Software Engineering Practice and Tools (SWE302) course.
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: September 2025  
-**Security Status**: ✅ All known vulnerabilities resolved
+**Last Updated**: November 2025

@@ -5,6 +5,8 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  schedule:
+    - cron: "0 2 * * 1" # Weekly scan every Monday at 2 AM
 
 permissions:
   contents: read
@@ -12,6 +14,21 @@ permissions:
   actions: read
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.changes.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - 'pom.xml'
+              - 'dockerfile'
+
   test:
     name: build and test
     runs-on: ubuntu-latest
@@ -28,11 +45,18 @@ jobs:
         run: mvn -B test
 
   security:
-    needs: test
+    needs: [test, changes]
+    if: needs.changes.outputs.code == 'true' || github.event_name == 'schedule'
     name: Enhanced Security Analysis
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        scan-type: [dependencies, code]
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 17
         id: setup_java
         uses: actions/setup-java@v4
@@ -40,15 +64,43 @@ jobs:
           java-version: "17"
           distribution: "temurin"
           cache: maven
-      - name: Run comprehensive Snyk scan
+
+      - name: Build project for Snyk analysis
+        run: mvn clean compile
+
+      - name: Dependency Vulnerability Scan
+        if: matrix.scan-type == 'dependencies'
         uses: snyk/actions/maven@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           JAVA_HOME: ${{ steps.setup_java.outputs.jdk-path }}
         with:
-          args: --severity-threshold=medium --sarif-file-output=snyk.sarif
-      - name: Upload results to GitHub Security
+          args: --severity-threshold=medium --sarif-file-output=snyk-deps.sarif
+
+      - name: Code Security Scan
+        if: matrix.scan-type == 'code'
+        uses: snyk/actions/maven@0.4.0
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          JAVA_HOME: ${{ steps.setup_java.outputs.jdk-path }}
+        with:
+          command: code test
+          args: --sarif-file-output=snyk-code.sarif
+
+      - name: Upload SARIF results to GitHub Security
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: snyk.sarif
+          sarif_file: snyk-${{ matrix.scan-type }}.sarif
+          category: snyk-${{ matrix.scan-type }}
+
+      - name: Monitor project in Snyk
+        if: matrix.scan-type == 'dependencies' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: snyk/actions/maven@0.4.0
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          JAVA_HOME: ${{ steps.setup_java.outputs.jdk-path }}
+        with:
+          command: monitor
+          args: --project-name=${{ github.repository }}
