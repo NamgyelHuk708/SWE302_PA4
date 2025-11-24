@@ -2,18 +2,18 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
   pull_request:
-    branches: ["master"]
+    branches: ["main"]
 
 jobs:
   test:
     name: build and test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
+        id: setup_java
         uses: actions/setup-java@v4
         with:
           java-version: "17"
@@ -21,13 +21,29 @@ jobs:
           cache: maven
       - name: Perform the Unit Test Cases
         run: mvn -B test
+
   security:
     needs: test
-    name: SA scan using snyk
+    name: Enhanced Security Analysis
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/maven@master
+      - name: Set up JDK 17
+        id: setup_java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+      - name: Run comprehensive Snyk scan
+        uses: snyk/actions/maven@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          JAVA_HOME: ${{ steps.setup_java.outputs.jdk-path }}
+        with:
+          args: --severity-threshold=medium --sarif-file-output=snyk.sarif
+      - name: Upload results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: snyk.sarif
